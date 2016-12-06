@@ -3,21 +3,7 @@
     { "keys": ["super+option+a"], "command": "clang_format",
         "context":
         [
-            {"key": "selector", "operator": "equal", "operand": "source.c++"}
-        ],
-    },
-
-    { "keys": ["super+option+a"], "command": "clang_format",
-        "context":
-        [
-            {"key": "selector", "operator": "equal", "operand": "source.c"}
-        ],
-    },
-
-    { "keys": ["super+option+a"], "command": "clang_format",
-        "context":
-        [
-            {"key": "selector", "operator": "equal", "operand": "source.js"}
+            {"key": "selector", "operator": "equal", "operand": "source.kl"}
         ]
     }
 ]
