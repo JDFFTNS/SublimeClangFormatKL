@@ -36,7 +36,7 @@ all_settings  = [
     "MaxEmptyLinesToKeep", "NamespaceIndentation", "ObjCBlockIndentWidth",
     "ObjCSpaceAfterProperty", "ObjCSpaceBeforeProtocolList",
     "PenaltyBreakBeforeFirstCallParameter", "PenaltyBreakComment",
-    "PenaltyBreakFirstLessLess", "PenaltyBreakString",
+    "PenaltyBreakFirstLessLess", "PenaltyBreakString", "BreakStringLiterals",
     "PenaltyExcessCharacter", "PenaltyReturnTypeOnItsOwnLine", "PointerAlignment",
     "SpaceAfterCStyleCast", "SpaceBeforeAssignmentOperators", "SpaceBeforeParens",
     "SpaceInEmptyParentheses", "SpacesBeforeTrailingComments", "SpacesInAngles",
