@@ -15,7 +15,7 @@
     // local directories from a clang-format settings file. See the clang-format
     // documentation to see how this works. 
 
-    "style": "Google",
+    "style": "Custom",
 
     // Setting this to true will run the formatter on every save. If you want to
     // only enable this for a given project, try checking out the package
@@ -27,5 +27,5 @@
     // has its syntax set to a language in the list below. If it is in the list,
     // then the file will be formatted by ClangFormat.
 
-    "languages": ["C", "C++", "C++11", "JavaScript", "Objective-C", "Objective-C++"]
+    "languages": ["KL"]
 }

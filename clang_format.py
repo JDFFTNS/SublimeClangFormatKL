@@ -1,5 +1,6 @@
 import sublime, sublime_plugin
 import subprocess, os
+import re, string, random
 
 
 # The styles available by default. We add one option: "Custom". This tells
@@ -82,6 +83,19 @@ st_encodings_trans = {
    "Hexadecimal" : None,
    "Undefined" : None
 }
+
+
+kl_temp_replace = [
+    "public",
+    "private",
+    "protected",
+    "([A-Za-z0-9]*!)\\("
+]
+
+kl_fix_subs = [
+    ("!= =", "!=="),
+    ("== =", "==="),
+]
 
 
 # Check if we are running on a Windows operating system
@@ -202,6 +216,39 @@ def is_supported(lang):
 
 # Triggered when the user runs clang format.
 class ClangFormatCommand(sublime_plugin.TextCommand):
+    def kl_pre_sanitize(self, buf):
+        self.kl_find_replace = []
+        used = set()
+        for pattern in kl_temp_replace:
+            import re
+            found_patterns = set(re.findall(pattern, buf))
+            for found in found_patterns:
+                if len(found) < 2:
+                    continue
+                randstr = ""
+                # find a random string that hasn't been used, and isn't already in the buf. 
+                while (not randstr) or (randstr in used) or (randstr in buf):
+                    randstr = ''.join(random.choice(string.ascii_uppercase+string.ascii_lowercase) for x in range(len(found)))
+                used.add(randstr)
+                self.kl_find_replace.append((found, randstr))
+
+        for findstr, repl in self.kl_find_replace:
+            buf = buf.replace(findstr, repl)
+
+        return buf
+
+    def kl_post_sanitize(self, buf):
+        for findstr, repl in self.kl_find_replace:
+            # undo it
+            buf = buf.replace(repl, findstr)
+
+        import re
+        for pattern, repl in kl_fix_subs:
+            buf = re.sub(pattern, repl, buf)
+
+        return buf
+
+
     def run(self, edit, whole_buffer=False):
         load_settings()
 
@@ -234,6 +281,10 @@ class ClangFormatCommand(sublime_plugin.TextCommand):
         else:
             regions = self.view.sel()
 
+        if all(x.size() == 0 for x in regions):
+            # no selection, select all
+            regions = [sublime.Region(0, self.view.size())]
+
         for region in regions:
             region_offset = region.begin()
             region_length = region.size()
@@ -258,6 +309,8 @@ class ClangFormatCommand(sublime_plugin.TextCommand):
 
         # Run CF, and set buf to its output.
         buf = self.view.substr(sublime.Region(0, self.view.size()))
+
+        buf = self.kl_pre_sanitize(buf)
         startupinfo = None
         if os_is_windows:
             startupinfo = subprocess.STARTUPINFO()
@@ -280,6 +333,8 @@ class ClangFormatCommand(sublime_plugin.TextCommand):
             sublime.error_message("Clang format: " + msg)
             # Don't do anything.
             return
+
+        output = self.kl_post_sanitize(output)
 
         # If there were no errors, we replace the view with the outputted buf.
         self.view.replace(
