@@ -2,6 +2,7 @@ import sublime, sublime_plugin
 import subprocess, os
 import re, string, random
 
+from collections import namedtuple
 
 # The styles available by default. We add one option: "Custom". This tells
 # the plugin to look in an ST settings file to load the customised style.
@@ -214,6 +215,29 @@ def is_supported(lang):
     return any((lang.endswith((l + '.tmLanguage', l + '.sublime-syntax')) for l in languages))
 
 
+ViewState = namedtuple('ViewState', ['row', 'col', 'vector'])
+
+def save_state(view):
+    # save cursor position
+    row, col = view.rowcol(view.sel()[0].begin())
+    # save viewport
+    vector = view.text_to_layout(view.visible_region().begin())
+    return ViewState(row, col, vector)
+
+def restore_state(view, state):
+    # restore cursor position
+    sel = view.sel()
+    if len(sel) == 1 and sel[0].a == sel[0].b:
+        point = view.text_point(state.row, state.col)
+        sel.subtract(sel[0])
+        sel.add(sublime.Region(point, point))
+
+    # restore viewport
+    # magic, next line doesn't work without it
+    view.set_viewport_position((0.0, 0.0), False)
+    view.set_viewport_position(state.vector, False)
+
+
 # Triggered when the user runs clang format.
 class ClangFormatCommand(sublime_plugin.TextCommand):
     def kl_pre_sanitize(self, buf):
@@ -281,6 +305,8 @@ class ClangFormatCommand(sublime_plugin.TextCommand):
         else:
             regions = self.view.sel()
 
+        view_state = save_state(self.view)
+
         if all(x.size() == 0 for x in regions):
             # no selection, select all
             regions = [sublime.Region(0, self.view.size())]
@@ -341,7 +367,7 @@ class ClangFormatCommand(sublime_plugin.TextCommand):
             edit, sublime.Region(0, self.view.size()),
             output.decode(encoding))
 
-        # TODO: better semantics for re-positioning cursors!
+        restore_state(self.view, view_state)
 
 
 # Hook for on-save event, to allow application of clang-format on save.
