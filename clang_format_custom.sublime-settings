@@ -314,7 +314,7 @@
     // The penalty for each line break introduced inside a string literal.
 //  "PenaltyBreakString": 0,
 
-  "BreakStringLiterals": false,
+  "BreakStringLiterals": false, // without this KL breaks. 
     // The penalty for each character outside of the column limit.
   "PenaltyExcessCharacter": 10,
 

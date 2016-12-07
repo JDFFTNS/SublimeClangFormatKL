@@ -392,6 +392,7 @@ class clangFormatSetPathCommand(sublime_plugin.WindowCommand):
 # Called from the UI to set the current style.
 class clangFormatSelectStyleCommand(sublime_plugin.WindowCommand):
     def done(self, i):
+        sublime.error_message("For KL, the custom style should always be used.")
         settings = sublime.load_settings(settings_file)
         settings.set("style", styles[i])
         sublime.save_settings(settings_file)

@@ -1,5 +1,4 @@
 [
-    { "caption": "Clang Format: Select Style",     "command": "clang_format_select_style" },    
-    { "caption": "Clang Format: Format Selection", "command": "clang_format" },
-    { "caption": "Clang Format: Set Path", "command": "clang_format_set_path" }
+    { "caption": "Clang Format KL: Format Selection", "command": "clang_format" },
+    { "caption": "Clang Format KL: Set Path", "command": "clang_format_set_path" }
 ]
