@@ -44,7 +44,7 @@
     //     int aaaa = 12;
     //     int b    = 23;
     //     int ccc  = 23;
-//  "AlignConsecutiveAssignments": true,
+  "AlignConsecutiveAssignments": true,
 
     // If true, aligns consecutive declarations.
     // This will align the declaration names of consecutive lines. This will result in formattings like
@@ -84,7 +84,7 @@
     //     inside a class.
     //     SFS_All    (in "configuration": All) Merge all functions fitting on a
     //     single line.
-//  "AllowShortFunctionsOnASingleLine": "None",
+  "AllowShortFunctionsOnASingleLine": "None",
 
     // If true, if (a) return; can be put on a single line.
 //  "AllowShortIfStatementsOnASingleLine": false,
@@ -304,9 +304,9 @@
 
     // The penalty for breaking a function call after “call(”.
 //  "PenaltyBreakBeforeFirstCallParameter": 0,
-    //"ReflowComments": true,
+    "ReflowComments": true,
     // The penalty for each line break introduced inside a comment.
-//  "PenaltyBreakComment": 0,
+  "PenaltyBreakComment": 1,
 
     // The penalty for breaking before the first <<.
 //  "PenaltyBreakFirstLessLess": 0,
@@ -316,7 +316,7 @@
 
   "BreakStringLiterals": false,
     // The penalty for each character outside of the column limit.
-//  "PenaltyExcessCharacter": 0,
+  "PenaltyExcessCharacter": 10,
 
     // Penalty for putting the return type of a function onto its own line.
 //  "PenaltyReturnTypeOnItsOwnLine": 0,
@@ -353,7 +353,7 @@
     // The number of spaces before trailing line comments (//-comments). This
     // does not affect trailing block comments (/**/-comments) as those commonly
     // have different usage patterns and a number of special cases.
-  "SpacesBeforeTrailingComments": 4,
+  "SpacesBeforeTrailingComments": 1,
 
     // If true, spaces will be inserted after ‘<’ and before ‘>’ in template
     // argument lists
