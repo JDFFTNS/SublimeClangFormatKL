@@ -334,6 +334,7 @@ class ClangFormatCommand(sublime_plugin.TextCommand):
 
         # Run CF, and set buf to its output.
         buf = self.view.substr(sublime.Region(0, self.view.size()))
+        orig_text = "%s" % buf
         buf = self.kl_pre_sanitize(buf)
         startupinfo = None
         if os_is_windows:
@@ -360,10 +361,11 @@ class ClangFormatCommand(sublime_plugin.TextCommand):
 
         output = self.kl_post_sanitize(output)
 
-        # If there were no errors, we replace the view with the outputted buf.
-        self.view.replace(
-            edit, sublime.Region(0, self.view.size()),
-            output.decode(encoding))
+        if orig_text != output:
+            # If there were no errors, we replace the view with the outputted buf.
+            self.view.replace(
+                edit, sublime.Region(0, self.view.size()),
+                output.decode(encoding))
 
         self.restore_view_state()
 
