@@ -1,6 +1,6 @@
 import sublime, sublime_plugin
 import subprocess, os
-import re, string, random
+import re, string, random, time
 
 from collections import namedtuple
 
@@ -335,7 +335,6 @@ class ClangFormatCommand(sublime_plugin.TextCommand):
 
         # Run CF, and set buf to its output.
         buf = self.view.substr(sublime.Region(0, self.view.size()))
-
         buf = self.kl_pre_sanitize(buf)
         startupinfo = None
         if os_is_windows:
@@ -408,24 +407,26 @@ class clangFormatSelectStyleCommand(sublime_plugin.WindowCommand):
 
 
 class ClangFormatFileCommand(sublime_plugin.WindowCommand):
-
-# class AutoPep8FileCommand(sublime_plugin.WindowCommand):
-
     def run(self, paths=None, preview=True):
-        if not paths:
-            return
-        for path in self.files(paths):
-            print path
+        if paths:
+            self.opened_views = []
+            self.current_preview = preview
+            for path in self.files(paths):
+                view = self.window.open_file(path)
+                self.opened_views.append(view)
 
-        for path in self.files(paths):
-            view = self.window.open_file(path)
-            format = ClangFormatCommand(view)
-            edit = view.begin_edit("edit file")
-            format.run(edit, True)
-            edit = view.end_edit(edit)
-            if not preview:
-                view.run_command('save')
-
+        if any(x.is_loading() for x in self.opened_views):
+            sublime.set_timeout(self.run, 50)
+        else:
+            for view in self.opened_views:
+                # view = self.window.open_file(path)
+                format_command = ClangFormatCommand(view)
+                edit = view.begin_edit("edit file")
+                format_command.run(edit, True)
+                view.end_edit(edit)
+                if not self.current_preview:
+                    view.run_command('save')
+            self.opened_views = []
 
     def py_files_from_dir(self, path):
         for dirpath, dirnames, filenames in os.walk(path):
