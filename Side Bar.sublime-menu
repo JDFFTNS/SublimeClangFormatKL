@@ -1,0 +1,4 @@
+[
+    {"caption": "Clang Format KL", "command": "clang_format_file", "args": {"paths": [], "preview":false}},
+    {"caption": "Clang Format KL (Save)", "command": "clang_format_file", "args": {"paths": [], "preview":false}}
+]

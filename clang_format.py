@@ -405,3 +405,52 @@ class clangFormatSelectStyleCommand(sublime_plugin.WindowCommand):
         except ValueError:
             sel = 0
         active_window.show_quick_panel(styles, self.done, 0, sel)
+
+
+class ClangFormatFileCommand(sublime_plugin.WindowCommand):
+
+# class AutoPep8FileCommand(sublime_plugin.WindowCommand):
+
+    def run(self, paths=None, preview=True):
+        if not paths:
+            return
+        for path in self.files(paths):
+            print path
+
+        for path in self.files(paths):
+            view = self.window.open_file(path)
+            format = ClangFormatCommand(view)
+            edit = view.begin_edit("edit file")
+            format.run(edit, True)
+            edit = view.end_edit(edit)
+            if not preview:
+                view.run_command('save')
+
+
+    def py_files_from_dir(self, path):
+        for dirpath, dirnames, filenames in os.walk(path):
+            for filename in filenames:
+                if filename.endswith('.kl'):
+                    yield os.path.join(dirpath, filename)
+
+    def files(self, paths):
+        for path in paths:
+            if os.path.isfile(path) and path.endswith('.kl'):
+                yield path
+                continue
+            if os.path.isdir(path):
+                for file_path in self.py_files_from_dir(path):
+                    yield file_path
+
+    def check_paths(self, paths):
+        files = self.files(paths)
+        if files:
+            return True
+        else:
+            return False
+
+    def is_enabled(self, *args, **kwd):
+        return self.check_paths(kwd.get('paths'))
+
+    def is_visible(self, *args, **kwd):
+        return True
