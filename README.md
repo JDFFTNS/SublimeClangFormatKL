@@ -3,6 +3,18 @@ Clang Format
 
 [![Package Control](https://packagecontrol.herokuapp.com/downloads/Clang%20Format.svg?style=flat-square)](https://packagecontrol.io/packages/Clang%20Format)
 
+KL Version
+------------
+
+This is a modified version of the library, SublimeClangFormat, found here: https://github.com/rosshemsley/SublimeClangFormat
+
+It's modified to format Fabric Engine KL code. There are a few difference, 
+such as the "custom" style must be used, and can be modified, but it has in 
+it some important pieces such as not breaking strings, which doesn't work in KL. 
+
+Some other modifications exist to get clang format to ignore access keywords 
+(private, public, protected), ignore the modifiers ? and ! at the end of function
+names, and not break === and !==. 
 
 What it does
 ------------
