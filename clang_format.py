@@ -90,7 +90,7 @@ kl_temp_replace = [
     "public",
     "private",
     "protected",
-    "([A-Za-z0-9]*!)\\("
+    "([A-Za-z0-9]*[?!])\\("
 ]
 
 kl_fix_subs = [
