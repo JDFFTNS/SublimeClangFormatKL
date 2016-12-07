@@ -217,26 +217,6 @@ def is_supported(lang):
 
 ViewState = namedtuple('ViewState', ['row', 'col', 'vector'])
 
-def save_state(view):
-    # save cursor position
-    row, col = view.rowcol(view.sel()[0].begin())
-    # save viewport
-    vector = view.text_to_layout(view.visible_region().begin())
-    return ViewState(row, col, vector)
-
-def restore_state(view, state):
-    # restore cursor position
-    sel = view.sel()
-    if len(sel) == 1 and sel[0].a == sel[0].b:
-        point = view.text_point(state.row, state.col)
-        sel.subtract(sel[0])
-        sel.add(sublime.Region(point, point))
-
-    # restore viewport
-    # magic, next line doesn't work without it
-    view.set_viewport_position((0.0, 0.0), False)
-    view.set_viewport_position(state.vector, False)
-
 
 # Triggered when the user runs clang format.
 class ClangFormatCommand(sublime_plugin.TextCommand):
@@ -272,6 +252,25 @@ class ClangFormatCommand(sublime_plugin.TextCommand):
 
         return buf
 
+    def save_view_state(self):
+        # save cursor position - taken from SublimeAutoPEP8
+        row, col = self.view.rowcol(self.view.sel()[0].begin())
+        # save viewport
+        vector = self.view.text_to_layout(self.view.visible_region().begin())
+        self.view_state = ViewState(row, col, vector)
+
+    def restore_view_state(self):
+        # restore cursor position - taken from SublimeAutoPEP8
+        sel = self.view.sel()
+        if len(sel) == 1 and sel[0].a == sel[0].b:
+            point = self.view.text_point(self.view_state.row, self.view_state.col)
+            sel.subtract(sel[0])
+            sel.add(sublime.Region(point, point))
+
+        # restore viewport
+        # magic, next line doesn't work without it
+        self.view.set_viewport_position((0.0, 0.0), False)
+        self.view.set_viewport_position(self.view_state.vector, False)
 
     def run(self, edit, whole_buffer=False):
         load_settings()
@@ -305,7 +304,7 @@ class ClangFormatCommand(sublime_plugin.TextCommand):
         else:
             regions = self.view.sel()
 
-        view_state = save_state(self.view)
+        self.save_view_state()
 
         if all(x.size() == 0 for x in regions):
             # no selection, select all
@@ -366,7 +365,7 @@ class ClangFormatCommand(sublime_plugin.TextCommand):
             edit, sublime.Region(0, self.view.size()),
             output.decode(encoding))
 
-        restore_state(self.view, view_state)
+        self.restore_view_state()
 
 
 # Hook for on-save event, to allow application of clang-format on save.
