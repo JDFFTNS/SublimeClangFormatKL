@@ -1,6 +1,6 @@
 [
     // TODO: figure out how to match multiple scopes.
-    { "keys": ["super+option+a"], "command": "clang_format",
+    { "keys": ["super+option+c"], "command": "clang_format",
         "context":
         [
             {"key": "selector", "operator": "equal", "operand": "source.kl"}
