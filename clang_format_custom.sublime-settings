@@ -179,7 +179,8 @@
 
     // A regular expression that describes comments with special meaning, which
     // should not be split into lines or otherwise changed.
-    // "CommentPragmas": "",
+    // "CommentPragmas": "'(/.*\\\\|\\*.*\\\\)'", // captures comments  /// \... or /** \...
+    "CommentPragmas": "'\\\\[dD][fF][gG]'", // captures comments containing "\DFG"
 
     // If the constructor initializers don’t fit on a line, put each initializer
     // on its own line.
